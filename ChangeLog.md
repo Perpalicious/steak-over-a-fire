@@ -465,4 +465,45 @@ Format per entry: **What was broken**, **What changed**, **Tests performed**.
 - Sanity-checked that the page renders immediately (category headers) and only renders cards when a category is opened (lazy rendering).
 - Verified watch toggling updates immediately (no refresh needed) and Watched tab re-renders when active.
 
+## 2026-01-31 — Encore Sun/Mon Mobile Viewer (Auctions: 703264 Sunday, 703263 Monday)
+
+### Added
+- Bat’s List: added a new top-level category **“3D Printing”** with matching for common 3D-printer-related terms (printers/machines, filament/resin, parts/upgrades).
+- Day selector: added **Both** mode so searches and tab views (All / Nice Picks / Bat’s List) can be run across **Sunday + Monday concurrently**, presented as **two collapsible day sections**.
+- State persistence:
+  - Category expand/collapse state persists per **day + tab** (so switching All → Nice Picks → All doesn’t collapse everything).
+  - Category/Sub-category dropdown selections persist per **view (day + tab)**.
+
+### Fixed
+- Watch ⭐ bug: clicking the star no longer collapses the open category/section (star click is handled without triggering parent toggles/rebuilds).
+- Dropdown filtering: **Category** and **Sub-category** dropdowns now actually filter results (works in All / Nice Picks / Bat’s List / Watched).
+- Clear button: **Clear** now also resets **Category + Sub-category** dropdown state back to “All” (in addition to clearing search).
+- Dropdown appearance: restored baseline layout and applied a **minimal CSS-only** adjustment so Category/Sub-category dropdown background colors render correctly (no layout/JS changes to achieve this).
+- Watched counter: Watched pill count now shows the **TOTAL watched across both days** (not dependent on currently selected day).
+- Watched view: Watched tab now **always displays both days** (Sunday + Monday) as collapsible sections regardless of selected day.
+
+### Changed
+- Day handling in Watched:
+  - Day selection (Sunday/Monday/Both) still applies to **All / Nice Picks / Bat’s List**.
+  - **Watched ignores day selection** and always shows both days for completeness.
+- Rendering/performance: category item lists are built lazily on expand (keeps the UI responsive on large auctions).
+
+### Persistence / Local Storage Keys
+- `encore_watched_v1` — watched/starred items
+- `encore_open_state_v1` — expanded category state (per day+tab)
+- `encore_ui_prefs_v1` — UI prefs + saved dropdown filters (per day+tab)
+
+### Deprecated / Notes
+- Desktop version is effectively deprecated (mobile is the canonical UI and works well on desktop too).
+
+### Tests performed (manual regression checks)
+- Star/unstar items inside an expanded category → **category remains open**; watched state persists on refresh.
+- Expand multiple categories in All → switch to Nice Picks / Bat’s List → return to All → **expanded categories remain expanded**.
+- Category/Sub-category dropdowns change results immediately in All / Nice Picks / Bat’s List.
+- Clear button resets Search + Category + Sub-category back to defaults.
+- Select **Both** → run search → results include both days, separated into collapsible Sunday/Monday sections.
+- Watched tab shows Sunday + Monday regardless of day selected; watched count equals total watched across both days.
+- Compact / Small Text toggles remain functional (no regressions observed).
+
+
 ---
